@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 
 from image_module import display_frames
+from video_frame_extractor import extract_frames_for_intervals
 
 
 SHOW_IMAGES = True
@@ -9,6 +10,12 @@ SHOW_IMAGES = True
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Fighter punch capture starter")
+    parser.add_argument(
+        "--mode",
+        choices=["display", "extract"],
+        default="display",
+        help="Choose whether to display frames or extract timed frames from a video",
+    )
     parser.add_argument("--source", default="0", help="Video source index or path")
     parser.add_argument("--output", default="output", help="Output folder for captured frames")
     parser.add_argument("--stop-key", default="q", help="Keyboard key that stops frame display")
@@ -23,8 +30,12 @@ def main() -> int:
     print(f"Capture source: {args.source}")
     print(f"Output directory: {output_dir.resolve()}")
 
+    if args.mode == "extract":
+        extract_frames_for_intervals(video_path=args.source, output_dir=args.output)
+        return 0
+
     if SHOW_IMAGES:
-        display_frames("datasets/standing", stop_key=args.stop_key)
+        display_frames(args.source, stop_key=args.stop_key)
 
     return 0
 

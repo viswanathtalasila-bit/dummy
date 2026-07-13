@@ -17,6 +17,13 @@ class ProjectSmokeTest(unittest.TestCase):
 
         self.assertEqual(args.stop_key, "q")
 
+    def test_parser_supports_mode_switch(self):
+        parser = build_parser()
+        args = parser.parse_args(["--mode", "extract", "--source", "datasets/punching_1/punching_1.mp4"])
+
+        self.assertEqual(args.mode, "extract")
+        self.assertEqual(args.source, "datasets/punching_1/punching_1.mp4")
+
 
 if __name__ == "__main__":
     unittest.main()
