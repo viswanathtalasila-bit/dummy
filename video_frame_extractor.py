@@ -8,6 +8,23 @@ import cv2
 DEFAULT_VIDEO_PATH = Path("datasets/punching_1/punching_1.mp4")
 DEFAULT_OUTPUT_DIR = Path("datasets/punching_1")
 
+
+def resolve_video_path(video_path: str | Path = DEFAULT_VIDEO_PATH) -> Path:
+    """Resolve a CLI source into an existing video file path.
+
+    The CLI uses "0" as the default source value. For frame extraction, a
+    numeric source should fall back to the bundled dataset video when present.
+    """
+    candidate = Path(video_path)
+    if candidate.exists():
+        return candidate
+
+    if str(video_path).strip().isdigit() and DEFAULT_VIDEO_PATH.exists():
+        return DEFAULT_VIDEO_PATH
+
+    return candidate
+
+
 INTERVALS_BY_COMMENT: dict[str, tuple[int, int]] = {
     "1-2, 1-2 non stop": (59, 120),
     "jab only": (144, 202),
@@ -31,7 +48,7 @@ def extract_frames_for_intervals(
     intervals_by_comment: dict[str, tuple[int, int]] | None = None,
 ) -> dict[str, Path]:
     """Extract all frames for each named interval and store them into separate folders."""
-    video_file = Path(video_path)
+    video_file = resolve_video_path(video_path)
     if not video_file.exists():
         raise FileNotFoundError(f"Video file not found: {video_file}")
 
