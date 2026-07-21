@@ -6,15 +6,26 @@ from test_pose import main as run_pose_estimation
 from video_frame_extractor import extract_frames_for_intervals
 
 
-SHOW_IMAGES = True
+def prompt_pose_estimation_csv_output() -> bool:
+    print("Choose pose estimation output:")
+    print("1) Show images with detected joints only")
+    print("2) Write CSV output only")
+
+    while True:
+        selection = input("Enter 1 or 2: ").strip()
+        if selection == "1":
+            return False
+        if selection == "2":
+            return True
+        print("Invalid selection. Enter 1 or 2.")
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Fighter punch capture starter")
     parser.add_argument(
         "--mode",
-        choices=["display", "extract", "pose"],
-        default="pose",
+        choices=["display", "extract", "pose_estimation"],
+        default="pose_estimation",
         help="Choose whether to display frames, extract timed frames from a video, or run pose estimation",
     )
     parser.add_argument("--source", default="0", help="Video source index or path")
@@ -35,12 +46,14 @@ def main() -> int:
         extract_frames_for_intervals(video_path=args.source, output_dir=args.output)
         return 0
 
-    if args.mode == "pose":
-        run_pose_estimation()
+    if args.mode == "pose_estimation":
+        write_csv = prompt_pose_estimation_csv_output()
+        run_pose_estimation(show_images=not write_csv, write_csv=write_csv)
         return 0
 
-    if SHOW_IMAGES:
-        display_frames(args.source, stop_key=args.stop_key)
+    if args.mode == "display":
+        display_frames("datasets/punching_1/power_right_hooks/", stop_key=args.stop_key)
+        return 0
 
     return 0
 

@@ -3,7 +3,7 @@ from typing import Iterator
 
 import cv2
 
-DATASET_DIR = Path("datasets/punching_1")
+DATASET_DIR = Path("datasets/punching_1/jab_only/")
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}
 
 

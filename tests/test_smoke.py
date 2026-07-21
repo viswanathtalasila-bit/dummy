@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from main import build_parser
+from test_pose import derive_pose_label
 from video_frame_extractor import DEFAULT_VIDEO_PATH, extract_frames_for_intervals
 
 
@@ -33,6 +34,11 @@ class ProjectSmokeTest(unittest.TestCase):
         args = parser.parse_args([])
 
         self.assertEqual(args.mode, "pose")
+
+    def test_pose_label_is_derived_from_subfolder_name(self):
+        self.assertEqual(derive_pose_label("jab_only"), "jab")
+        self.assertEqual(derive_pose_label("cross_only"), "right cross")
+        self.assertEqual(derive_pose_label("power_left_hooks"), "left hook")
 
     def test_extract_uses_default_video_when_source_is_zero(self):
         with tempfile.TemporaryDirectory() as temp_dir:
